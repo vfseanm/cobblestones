@@ -8,7 +8,6 @@
   width: 100%;
   margin:0px;
   padding:0px;
-  height:17px;
 }
 .block {
   padding:0px;
@@ -35,6 +34,17 @@
 </style>
 <style id="styleTopTag">
 </style>
+<style id="styleBlockTag">
+.block {
+  width: 15px;
+  height: 15px;
+  margin:1px;
+ }
+ .row {
+     height:17px;
+     }
+ }
+</style>
   <div class="container">
     <div class="col-lg-4 col-md-4 col-sm-4">
       <div class='well'>
@@ -44,14 +54,16 @@
          </div>
           <div class="form-group" style="margin-bottom:0px">
           Top:
-          <input type="radio" value='#6ecc7f' name="colorTop" checked>Green
-          <input type="radio" value="#ee0000" name="colorTop">Orange
+          <input type="radio" value="#6ecc7f" name="colorTop" checked>Green
+          <input type="radio" value="#ff9800" name="colorTop">Orange
           <input type="radio" value="#fff" name="colorTop">White
+          <input type="radio" value="#a46ecc" name="colorTop">Purple
           <br>
           Bottom:
-          <input type="radio" value='#88f1f1' name="colorBottom" checked>Cyan
-          <input type="radio" value="#00f" name="colorBottom">Blue
-          <input type="radio" value="#ff0" name="colorBottom">Lemon
+          <input type="radio" value="#88f1f1" name="colorBottom" checked>Cyan
+          <input type="radio" value="#44449d" name="colorBottom">Blue
+          <input type="radio" value="#efdf4e" name="colorBottom">Lemon
+          <input type="radio" value="#000" name="colorBottom">Black
          </div>
     </div>
     </div>
@@ -92,8 +104,16 @@ function changeColors(top, bottom) {
 
 changeColors('#6ecc7f', '#88f1f1');
 
+function updateSize(rows) {
+  var size  = 340/rows - 2;
+  var rowHeight = size + 2;
+  var styleBottomTag = document.getElementById('styleBlockTag');
+  styleBottomTag.innerHTML = '.block{width:' + size + 'px; height:' + size + 'px;margin:1px;} .row{height:'+rowHeight + 'px;}';
+  
+}
+
 function createRows (rows) {
-  // create number of rows and columns
+  updateSize(rows);
   NUM_ROWS = rows;
   squaresMatrix = [];
   $('.row').remove();
