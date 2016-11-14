@@ -65,9 +65,10 @@
   <div class="container">
     <div class="col-lg-4 col-md-4 col-sm-4">
       <div class='well'>
-    	<input id="numRows" placeholder="Width/Height">
-    	<button id="button" class="btn btn-primary">Update</button>
-    	<br style="height:12px"/>
+        <div class="form-group">
+        	<input id="numRows" class="form-control" placeholder="Width/Height" style="width:auto; display:inline-block">
+        	<button id="button" class="btn btn-primary">Update</button>
+    	   </div>
     </div>
     </div>
 
@@ -81,10 +82,11 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script>
-var NUM_ROWS = 20;
+var NUM_ROWS;
 var squaresMatrix;
 
-function createRows (NUM_ROWS) {
+function createRows (rows) {
+  NUM_ROWS = rows;
 	squaresMatrix = [];
 	$('.row').remove();
   for (var i = 0; i < NUM_ROWS; i++) {
@@ -104,7 +106,7 @@ function createRows (NUM_ROWS) {
 	});
 }
 
-createRows(NUM_ROWS);
+createRows(20);
 var update = function() {
 	createRows($('#numRows').val() || 20);
 }
