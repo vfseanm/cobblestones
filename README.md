@@ -1,1 +1,1 @@
-# cobblestones
+# README for cobblestones, a JS game.
