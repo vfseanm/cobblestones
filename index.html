@@ -1,7 +1,123 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<style>
+	button {
+  font-family:Verdana;
+    color: #ffffff;
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 8px 13px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    margin-bottom:12px;
+    margin-top: 7px;
+}
+
+input {
+  font-family:Verdana;
+  font-size: 13px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    margin-bottom:12px;
+    padding: 8px 2px;
+}
+
+.row {
+  width: 100%;
+  margin:0px;
+  padding:0px;
+  height:17px;
+}
+.block {
+  padding:0px;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  background-color: #88f1f1;
+  transition: background-color .5s ease-in-out;
+  margin:1px;
+  cursor: pointer;
+}
+.green {
+  background-color: #6ecc7f;
+}
+</style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+	<input id="numRows" placeholder="Number of Rows/Columns">
+	<button id="button">Update</button>
+	<br style="height:12px"/>
+	<script>
+var NUM_ROWS = 20;
+var squaresMatrix;
+
+function createRows (NUM_ROWS) {
+	squaresMatrix = [];
+	$('.row').remove();
+  for (var i = 0; i < NUM_ROWS; i++) {
+    var row = [];
+    for (var j = 0; j < NUM_ROWS; j++) {
+      block = $('<div class="green block"></div>')[0];
+      row.push(block);
+    }
+    squaresMatrix.push(row);
+  };
+	squaresMatrix.forEach(function (row, idx) {
+  	  var $row = $('<div class="row"></div>')[0];
+	  	$('body')[0].appendChild($row);
+	    row.forEach(function(block) {
+  	  $row.appendChild(block);
+	  })
+	});
+}
+
+createRows(NUM_ROWS);
+var update = function() {
+	createRows($('#numRows').val() || 20);
+}
+$('button').on('click', update);
+document.addEventListener('click', function (e) {
+    var clicked = e.target;
+  if (!$(e.target).hasClass('block')) {
+  	return;
+  }
+  $(e.target).toggleClass('green');
+  
+  var idx = findIndex(e.target);
+  console.log(idx);
+  // [0, 0] 
+  var rowIdx = idx[0];
+  var colIdx = idx[1];
+  
+  if (rowIdx < NUM_ROWS - 1) {
+      $(squaresMatrix[rowIdx + 1][colIdx]).toggleClass('green');
+  }
+  if (colIdx < NUM_ROWS - 1) {
+      $(squaresMatrix[rowIdx][colIdx + 1]).toggleClass('green');
+  }
+  if (rowIdx > 0) {
+      $(squaresMatrix[rowIdx - 1][colIdx]).toggleClass('green');
+  }
+  if (colIdx > 0) {
+      $(squaresMatrix[idx[0]][idx[1] - 1]).toggleClass('green');
+  }
+});
+function findIndex(block) {
+    var idx = [];
+  squaresMatrix.forEach(function (row, rowIdx) {
+      if (row.indexOf(block) !== -1) {
+        idx = [rowIdx, row.indexOf(block)];
+    }
+  });
+  return idx;
+}
+</script>
 </body>
 </html>
