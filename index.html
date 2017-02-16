@@ -1,22 +1,178 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
-<style>
+  <link rel="stylesheet" href="styles/flatly.min.css">
+	<style>
+	
+.row {
+  width: 100%;
+  margin:0px;
+  padding:0px;
+}
+.block {
+  padding:0px;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  transition: background-color .5s ease-in-out;
+  margin:1px;
+  cursor: pointer;
+}
 </style>
 </head>
+
+
 <body>
   <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Game of life</a>
+      <a class="navbar-brand" href="#">Cobblestones.io</a>
     </div>
   </div>
 </nav>
-<div class="container">
+<style id="styleBottomTag">
+</style>
+<style id="styleTopTag">
+</style>
+<style id="styleBlockTag">
+.block {
+  width: 15px;
+  height: 15px;
+  margin:1px;
+ }
+ .row {
+     height:17px;
+     }
+ }
+</style>
+  <div class="container">
+    <div class="col-lg-4 col-md-4 col-sm-4">
+      <div class='well'>
+        <div class="form-group" style="margin-bottom:0px">
+          <input id="numRows" class="form-control" placeholder="Width/Height" style="width:auto; display:inline-block">
+          <button id="button" class="btn btn-primary">Update</button>
+         </div>
+          <div class="form-group" style="margin-bottom:0px">
+          Top:
+          <input type="radio" value="#6ecc7f" name="colorTop" checked>Green
+          <input type="radio" value="#ff9800" name="colorTop">Orange
+          <input type="radio" value="#fff" name="colorTop">White
+          <input type="radio" value="#a46ecc" name="colorTop">Purple
+          <br>
+          Bottom:
+          <input type="radio" value="#88f1f1" name="colorBottom" checked>Cyan
+          <input type="radio" value="#44449d" name="colorBottom">Blue
+          <input type="radio" value="#efdf4e" name="colorBottom">Lemon
+          <input type="radio" value="#000" name="colorBottom">Black
+         </div>
+    </div>
+    </div>
+
+  <div class="col-lg-8 col-md-8 col-sm-8" style="width:auto">
+    <div class='well'>
+    <div id="boxContainer">
+    </div>
+  </div>
+  </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	<script>
+var NUM_ROWS;
+var squaresMatrix;
+
+$('input[name="colorTop"]').on('click', function (e) {
+  var val = e.target.value;
+  changeColors(val, null)
+})
+
+$('input[name="colorBottom"]').on('click', function (e) {
+  var val = e.target.value;
+  changeColors(null, val);
+})
+
+function changeColors(top, bottom) {
+  var styleTopTag = document.getElementById('styleTopTag');
+  var styleBottomTag = document.getElementById('styleBottomTag');
+  if (top) {
+    styleTopTag.innerHTML = '.green{background-color:'+top+'}';
+  }
+  if (bottom) {
+    styleBottomTag.innerHTML = '.block{background-color:'+bottom+'}';
+  }
+}
+
+changeColors('#6ecc7f', '#88f1f1');
+
+function updateSize(rows) {
+  var size  = 340/rows - 2;
+  var rowHeight = size + 2;
+  var styleBottomTag = document.getElementById('styleBlockTag');
+  styleBottomTag.innerHTML = '.block{width:' + size + 'px; height:' + size + 'px;margin:1px;} .row{height:'+rowHeight + 'px;}';
+  
+}
+
+function createRows (rows) {
+  updateSize(rows);
+  NUM_ROWS = rows;
+  squaresMatrix = [];
+  $('.row').remove();
+  for (var i = 0; i < NUM_ROWS; i++) {
+    var row = [];
+    for (var j = 0; j < NUM_ROWS; j++) {
+      block = $('<div class="green block"></div>')[0];
+      row.push(block);
+    }
+    squaresMatrix.push(row);
+  };
+  squaresMatrix.forEach(function (row, idx) {
+      var $row = $('<div class="row"></div>')[0];
+      $('#boxContainer')[0].appendChild($row);
+      row.forEach(function(block) {
+      $row.appendChild(block);
+    })
+  });
+}
+
+createRows(20);
+var update = function() {
+  createRows($('#numRows').val() || 20);
+}
+$('button').on('click', update);
+document.addEventListener('click', function (e) {
+    var clicked = e.target;
+  if (!$(e.target).hasClass('block')) {
+    return;
+  }
+  $(e.target).toggleClass('green');
+  
+  var idx = findIndex(e.target);
+  // [0, 0] 
+  var rowIdx = idx[0];
+  var colIdx = idx[1];
+  
+  if (rowIdx < NUM_ROWS - 1) {
+      $(squaresMatrix[rowIdx + 1][colIdx]).toggleClass('green');
+  }
+  if (colIdx < NUM_ROWS - 1) {
+      $(squaresMatrix[rowIdx][colIdx + 1]).toggleClass('green');
+  }
+  if (rowIdx > 0) {
+      $(squaresMatrix[rowIdx - 1][colIdx]).toggleClass('green');
+  }
+  if (colIdx > 0) {
+      $(squaresMatrix[idx[0]][idx[1] - 1]).toggleClass('green');
+  }
+});
+function findIndex(block) {
+    var idx = [];
+  squaresMatrix.forEach(function (row, rowIdx) {
+      if (row.indexOf(block) !== -1) {
+        idx = [rowIdx, row.indexOf(block)];
+    }
+  });
+  return idx;
+}
 </script>
 
 </body>
