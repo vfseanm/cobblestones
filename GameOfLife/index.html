@@ -2,6 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 <style>
 .cell {
   width: 15px;
@@ -35,12 +36,15 @@
 <div class="row">
 	<div style="text-align:center; margin-bottom:20px" class="col-lg-12 col-md-12 col-sm-12">
 			<p class="lead">Click any square to toggle it between alive and dead.</p>
-			<p><button class="btn btn-info" id='step'>Step Forward</button></p>
+			<p><button class="btn btn-info" id='step' style="margin-right:8px">Step Forward <i class="fa fa-step-forward" aria-hidden="true"></i></button>
+			<button class="btn btn-success" id='autoplay'>Autoplay <i class="fa fa-play" aria-hidden="true"></i></button>
+			<button class="btn btn-warning" id='pauseAutoplay' style='display:none'>Pause <i class="fa fa-pause" aria-hidden="true"></i></button></p>
 	</div>
 	</div>
 	<div class="row">
 <div class="col-lg-4 col-md-4 col-sm-4">
 		<div class='well'>
+		<h4>Rules</h4>
 				<p>1. Any live cell with fewer than two live neighbours dies.</p>
 				<p>2. Any live cell with two or three live neighbours lives on.</p>
 				<p>3. Any live cell with more than three live neighbours dies.</p>
@@ -60,10 +64,10 @@
 
 <script>
 	var elements = [];
+	var playing;  // Interval for when the game is running.
 	$(function() {
 		console.log($('#gameContainer'));
 		// Add all elements
-		// TODO: Display spinner while they're being added
 		for (var row =0; row< 20; row++) {
 			elements[row] = [];
 			var rowElement = document.createElement('div');
@@ -76,9 +80,7 @@
 			}
 			$('#gameContainer').append(rowElement);
 		}
-		$('#step').click(function() {
-			// Move the game forward by one step.
-			console.log('stepping forward');
+		var stepForward = function() {
 			for(row =0; row<elements.length; row++) {
 				for(col =0; col<elements.length; col++) {
 					var cell = $(elements[row][col]);
@@ -97,6 +99,23 @@
 					}
 				}
 			}
+		}
+		$('#autoplay').click(function() {
+			// Start progressing the game one step per second
+			playing = setInterval(function() {
+				stepForward(); 
+			}, 500);
+			$('#autoplay').hide();
+			$('#pauseAutoplay').show();
+		});
+		$('#pauseAutoplay').click(function() {
+			clearInterval(playing);
+			$('#pauseAutoplay').hide();
+			$('#autoplay').show();
+		});
+		$('#step').click(function() {
+			// Move the game forward by one step.
+			stepForward();
 		});
 		$('.cell').on('click', function() {
 			$(this).toggleClass('alive');
