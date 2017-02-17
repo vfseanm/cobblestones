@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
+<style>
+.cell {
+  width: 15px;
+  height: 15px;
+  margin:1px;
+  /*Starts out Dead*/
+  background-color: #000;
+  display:inline-block;
+ }
+ .cell:hover{
+ 	cursor:pointer;
+ }
+ .alive {
+	background-color: green;
+}
+ .row {
+     height:17px;
+     margin-left:0px;
+     }
+</style>
+</head>
+<body>
+  <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Conway's Game of Life</a>
+    </div>
+  </div>
+</nav>
+<div class="container">
+<div class="row">
+	<div class="col-lg-4 col-md-4 col-sm-4">
+		<div class='well'>
+			<h3>Controls</h3>
+			<p>Click any square to toggle it between alive and dead.</p>
+			<button class="btn btn-info" id='step'>Step Forward</button>
+		</div>
+	</div>
+	<div class="col-lg-8 col-md-8 col-sm-8">
+		<div class="well">
+				<div id="gameContainer">
+				</div>
+		</div>
+	</div>
+	</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+
+<script>
+	var elements = [];
+	$(function() {
+		console.log($('#gameContainer'));
+		// Add all elements
+		// TODO: Display spinner while they're being added
+		for (var row =0; row< 10; row++) {
+			elements[row] = [];
+			var rowElement = document.createElement('div');
+			rowElement.className+=" row";
+			for (var col = 0; col<10; col++){
+				var cell = document.createElement('div');
+				cell.className+=" cell";
+				elements[row][col] = cell;
+				rowElement.append(cell);
+			}
+			$('#gameContainer').append(rowElement);
+		}
+		$('#step').click(function() {
+			// Move the game forward by one step.
+			console.log('stepping forward');
+			for(row =0; row<elements.length; row++) {
+				for(col =0; col<elements.length; col++) {
+					var cell = $(elements[row][col]);
+					var liveNeighbors = countLiveNeighbors(row, col);
+					if (cell.hasClass('alive')) {
+						if (liveNeighbors < 2) {
+							setTimeout(function(cell) {cell.toggleClass('alive');}, 0, cell);
+						}
+						if (liveNeighbors > 3) {
+							setTimeout(function(cell) {cell.toggleClass('alive');}, 0, cell);
+						}
+					} else {
+						if (liveNeighbors == 3) {
+							setTimeout(function(cell) {cell.toggleClass('alive');}, 0, cell);
+						}
+					}
+				}
+			}
+		});
+		$('.cell').on('click', function() {
+			$(this).toggleClass('alive');
+		});
+	});
+	function isAlive(row, col){
+		if (row == -1 || col == -1 || row >= elements.length || col >= elements.length) {
+			return false;
+		}
+		return $(elements[row][col]).hasClass('alive');
+	}
+	function countLiveNeighbors(row, col) {
+		var total_live = 0;
+		for (var i = -1; i < 2; i++) {
+			for (var j = -1; j < 2; j++) {
+				if (i==0 && j==0) {
+					continue;
+				}
+				if (isAlive(row +i, col +j)) {
+					total_live +=1;
+				}
+			}
+		}
+		return total_live;
+	}
+</script>
+</body>
+</html>
