@@ -33,11 +33,19 @@
 </nav>
 <div class="container">
 <div class="row">
-	<div class="col-lg-4 col-md-4 col-sm-4">
+	<div style="text-align:center; margin-bottom:20px" class="col-lg-12 col-md-12 col-sm-12">
+			<p class="lead">Click any square to toggle it between alive and dead.</p>
+			<p><button class="btn btn-info" id='step'>Step Forward</button></p>
+	</div>
+	</div>
+	<div class="row">
+<div class="col-lg-4 col-md-4 col-sm-4">
 		<div class='well'>
-			<h3>Controls</h3>
-			<p>Click any square to toggle it between alive and dead.</p>
-			<button class="btn btn-info" id='step'>Step Forward</button>
+				<p>1. Any live cell with fewer than two live neighbours dies.</p>
+				<p>2. Any live cell with two or three live neighbours lives on.</p>
+				<p>3. Any live cell with more than three live neighbours dies.</p>
+				<p>4. Any dead cell with exactly three live neighbours becomes a live cell.</p>
+
 		</div>
 	</div>
 	<div class="col-lg-8 col-md-8 col-sm-8">
@@ -56,11 +64,11 @@
 		console.log($('#gameContainer'));
 		// Add all elements
 		// TODO: Display spinner while they're being added
-		for (var row =0; row< 10; row++) {
+		for (var row =0; row< 20; row++) {
 			elements[row] = [];
 			var rowElement = document.createElement('div');
 			rowElement.className+=" row";
-			for (var col = 0; col<10; col++){
+			for (var col = 0; col<20; col++){
 				var cell = document.createElement('div');
 				cell.className+=" cell";
 				elements[row][col] = cell;
